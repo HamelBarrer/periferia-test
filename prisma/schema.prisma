@@ -10,14 +10,59 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Orders {
-  orderId   Int      @id @default(autoincrement())
-  name      String
-  value     Int
-  username  String
-  createdAt DateTime @default(now())
+model RestaurantMenuItems {
+  restaurantMenuItemId Int               @id @default(autoincrement())
+  name                 String            @unique
+  isActive             Boolean           @default(true)
+  createdAt            DateTime          @default(now())
+  RestaurantMenus      RestaurantMenus[]
+}
+
+model RestaurantMenus {
+  restaurantMenuId     Int                 @id @default(autoincrement())
+  name                 String              @unique
+  isActive             Boolean             @default(true)
+  restaurantMenuItem   RestaurantMenuItems @relation(fields: [restaurantMenuItemId], references: [restaurantMenuItemId])
+  restaurantMenuItemId Int
+  createdAt            DateTime            @default(now())
+  Restaurants          Restaurants[]
 }
 
 model Restaurants {
-  restaurantId Int @id @default(autoincrement())
+  restaurantId                    Int              @id @default(autoincrement())
+  name                            String           @unique
+  menu                            String
+  // restaurantMenu   RestaurantMenus @relation(fields: [restaurantMenuId], references: [restaurantMenuId])
+  // restaurantMenuId Int
+  createdAt                       DateTime         @default(now())
+  RestaurantMenus                 RestaurantMenus? @relation(fields: [restaurantMenusRestaurantMenuId], references: [restaurantMenuId])
+  restaurantMenusRestaurantMenuId Int?
+  Orders                          Orders[]
+}
+
+model Deliveries {
+  deliveryId Int      @id @default(autoincrement())
+  name       String   @unique
+  createdAt  DateTime @default(now())
+  Orders     Orders[]
+}
+
+model Orders {
+  orderId      Int         @id @default(autoincrement())
+  name         String
+  value        Int
+  restaurant   Restaurants @relation(fields: [restaurantId], references: [restaurantId])
+  restaurantId Int
+  delivery     Deliveries  @relation(fields: [deliveryId], references: [deliveryId])
+  deliveryId   Int
+  username     String
+  createdAt    DateTime    @default(now())
+  Payments     Payments?
+}
+
+model Payments {
+  paymentId Int    @id @default(autoincrement())
+  value     Int
+  order     Orders @relation(fields: [orderId], references: [orderId])
+  orderId   Int    @unique
 }

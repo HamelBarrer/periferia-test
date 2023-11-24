@@ -3,4 +3,6 @@ export interface Order {
   name: string;
   value: number;
   username: string;
+  restaurantId: number;
+  deliveryId: number;
 }

@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+  servicedeliveries:
+    build: ./services/deliveries
+    ports:
+      - "3005:3000"
+    environment:
+      - PORT=3000
+
+  servicenotifications:
+    build: ./services/notifications
+    ports:
+      - "3004:3000"
+    environment:
+      - PORT=3000
+
+  serviceorders:
+    build: ./services/orders
+    ports:
+      - "3003:3000"
+    environment:
+      - PORT=3000
+
+  servicepayments:
+    build: ./services/payments
+    ports:
+      - "3002:3000"
+    environment:
+      - PORT=3000
+
+  servicerestaurants:
+    build: ./services/restaurants
+    ports:
+      - "3001:3000"
+    environment:
+      - PORT=3005

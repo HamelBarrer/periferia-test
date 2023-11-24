@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { sendEventRabbit } from '../rabbit';
 import { OrderService } from '../services/OrderService';
 
 export class OrderController {
@@ -7,6 +8,8 @@ export class OrderController {
   async createOrder(req: Request, res: Response) {
     try {
       const createdOrder = await this.orderService.createOrder(req.body);
+      await sendEventRabbit(createdOrder);
+
       res.status(201).json(createdOrder);
     } catch (error) {
       console.log({ error });

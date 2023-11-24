@@ -3,13 +3,16 @@ import { Restaurant } from './domain/Restaurant';
 
 export const sendEvent = async (data: Restaurant) => {
   try {
-    const connection = await amqp.connect('amqp://localhost'); // URL de conexión a RabbitMQ
+    const connection = await amqp.connect('amqp://localhost');
     const channel = await connection.createChannel();
-    const exchange = 'ActualizaciónDeRestaurante'; // Nombre del intercambio
+    const exchange = 'restaurants';
 
     await channel.assertExchange(exchange, 'direct', { durable: false });
 
-    const message = JSON.stringify(data);
+    const message = JSON.stringify({
+      content: 'ActualizaciónDeRestaurante',
+      data,
+    });
     channel.publish(exchange, '', Buffer.from(message));
 
     setTimeout(() => {

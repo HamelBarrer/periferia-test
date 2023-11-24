@@ -5,11 +5,14 @@ export const sendEventRabbit = async (data: Delivery) => {
   try {
     const connection = await amqp.connect('amqp://localhost');
     const channel = await connection.createChannel();
-    const exchange = 'EntregadorAsignado';
+    const exchange = 'deliveries';
 
     await channel.assertExchange(exchange, 'direct', { durable: false });
 
-    const message = JSON.stringify(data);
+    const message = JSON.stringify({
+      content: 'EntregadorAsignado',
+      data,
+    });
     channel.publish(exchange, '', Buffer.from(message));
 
     setTimeout(() => {

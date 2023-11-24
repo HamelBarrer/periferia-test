@@ -3,13 +3,16 @@ import { Payment } from './domain/Payment';
 
 export const sendEvent = async (data: Payment) => {
   try {
-    const connection = await amqp.connect('amqp://localhost'); // URL de conexión a RabbitMQ
+    const connection = await amqp.connect('amqp://localhost');
     const channel = await connection.createChannel();
-    const exchange = 'PagoCompletado'; // Nombre del intercambio
+    const exchange = 'payments';
 
     await channel.assertExchange(exchange, 'direct', { durable: false });
 
-    const message = JSON.stringify(data);
+    const message = JSON.stringify({
+      content: 'PagoCompletado',
+      data,
+    });
     channel.publish(exchange, '', Buffer.from(message));
 
     setTimeout(() => {
